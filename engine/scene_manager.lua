@@ -1,0 +1,50 @@
+local Class = require("lib.class")
+local SceneManager = Class{}
+
+
+function SceneManager:init(engine, game)
+    self.engine = engine
+    self.game = game
+
+    self.scenes = {}
+    self.current_scene = nil
+end
+
+
+function SceneManager:add_scene(name, scene)
+    self.scenes[name] = scene
+end
+
+
+function SceneManager:switch_scene(name)
+    local scene = self.scenes[name]
+    if not scene then
+        error("SceneManager:switch_scene - no scene registered under name '" .. tostring(name) .. "'")
+    end
+
+    if self.current_scene and self.current_scene.exit then
+        self.current_scene:exit()
+    end
+
+    self.current_scene = scene
+    if self.current_scene.enter then
+        self.current_scene:enter()
+    end
+end
+
+
+function SceneManager:update(dt)
+    if self.current_scene and self.current_scene.update then
+        self.current_scene:update(dt, self.engine.input_manager.mx, self.engine.input_manager.my, self.engine.input_manager.mouse_down, self.engine.input_manager.mouse_pressed)
+    end
+end
+
+
+function SceneManager:draw()
+    if self.current_scene and self.current_scene.draw then
+        self.current_scene:draw()
+    end
+end
+
+
+return SceneManager
