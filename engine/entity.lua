@@ -5,9 +5,9 @@ local flux = require("lib.flux")
 local Entity = Class{}
 
 
-function Entity:init(game, id, args)
-    self.game = game
-    self.engine = game.engine
+function Entity:init(scene, id, args)
+    self.scene = scene
+    self.engine = scene.engine
     self.id = id
 
     if type(args) ~= "table" then return end
