@@ -20,6 +20,10 @@ function DemoScene:enter()
     self.counter_draggable = Entity(self, "counter_draggable", {x=960, y=240, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="red", depth=155, hoverable=true, draggable=true})
     table.insert(self.entities, self.counter_draggable)
     self.engine.render_manager:create_text_object("text_draggable", "Draggable", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 960, 100, 0, 1, 2, "centre")
+
+    self.counter_clickable = Entity(self, "counter_clickable", {x=1280, y=240, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="green", depth=155, hoverable=true, clickable=true})
+    table.insert(self.entities, self.counter_clickable)
+    self.engine.render_manager:create_text_object("text_clickable", "Clickable", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1280, 100, 0, 1, 2, "centre")
 end
 
 
@@ -28,6 +32,14 @@ function DemoScene:update(dt, mx, my, md, mp)
         entity:update(dt, mx, my, md, mp)
     end
 end
+
+
+function DemoScene:trigger(trigger_id)
+    if trigger_id == "counter_clickable" then
+        print('Clicked')
+    end
+end
+
 
 
 function DemoScene:exit()

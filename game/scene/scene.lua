@@ -17,6 +17,10 @@ function Scene:update()
 end
 
 
+function Scene:trigger()
+end
+
+
 function Scene:exit()
     self.engine.event_manager:remove_owner(self)
 end

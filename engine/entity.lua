@@ -27,6 +27,7 @@ function Entity:init(scene, id, args)
     -- Get interaction information
     if args.hoverable then self.hoverable = args.hoverable or false end
     if args.draggable then self.draggable = args.draggable or false end
+    if args.clickable then self.clickable = args.clickable or false end
 
     -- Get sprite information
     if args.sprite_sheet then self.sprite_sheet = args.sprite_sheet end
@@ -130,7 +131,11 @@ function Entity:update_input(dt, mx, my, mouse_down, mouse_pressed)
     local is_clicked = is_hovered and mouse_pressed
     if is_clicked ~= self.clicked then
         self.clicked = is_clicked
-        if self.clicked then self:on_click() end
+        if self.clicked then 
+            if self.clickable then
+                self:on_click()
+            end
+        end
     end
 
     self.released = false
@@ -169,6 +174,11 @@ end
 
 
 function Entity:on_click()
+    if self.tween then self.tween:stop() end
+    self.scale = 0.95
+    local target_scale = self.hovered and 1.1 or 1
+    self.tween = flux.to(self, 0.5, {scale=target_scale}):ease("expoout")
+    self.scene:trigger(self.id)
 end
 
 
