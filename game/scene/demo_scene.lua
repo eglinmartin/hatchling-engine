@@ -24,6 +24,10 @@ function DemoScene:enter()
     self.counter_clickable = Entity(self, "counter_clickable", {x=1280, y=240, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="green", depth=155, hoverable=true, clickable=true})
     table.insert(self.entities, self.counter_clickable)
     self.engine.render_manager:create_text_object("text_clickable", "Clickable", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1280, 100, 0, 1, 2, "centre")
+
+    self.counter_static = Entity(self, "counter_static", {x=1600, y=240, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="black", depth=155})
+    table.insert(self.entities, self.counter_static)
+    self.engine.render_manager:create_text_object("text_static", "Static", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1600, 100, 0, 1, 2, "centre")
 end
 
 
