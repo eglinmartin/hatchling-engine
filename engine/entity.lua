@@ -185,12 +185,11 @@ function Entity:on_drag_end()
     if self.tween then self.tween:stop() end
     self.dragging = false
     self.released = true
-    self.depth = self.original_depth
     self.release_x = self.x
     self.release_y = self.y
 
     local target_scale = self.hovered and 1.1 or 1
-    self.tween = flux.to(self, 0.5, {x=self.original_x, y=self.original_y, scale=target_scale}):ease("expoout")
+    self.tween = flux.to(self, 0.5, {x=self.original_x, y=self.original_y, scale=target_scale}):ease("expoout"):oncomplete(function() self.depth = self.original_depth end)
 end
 
 
