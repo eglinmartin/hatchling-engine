@@ -119,11 +119,13 @@ function Entity:update_input(dt, mx, my, mouse_down, mouse_pressed)
     local is_hovered = self:contains_point(mx, my)
     if is_hovered ~= self.hovered and self.hoverable then
         self.hovered = is_hovered
-        if self.hovered then
-            self:on_hover_start()
-        else
-            if not self.dragging then
-                self:on_hover_end()
+        if not self.dragging then
+            if self.hovered then
+                self:on_hover_start()
+            else
+                if not self.dragging then
+                    self:on_hover_end()
+                end
             end
         end
     end
