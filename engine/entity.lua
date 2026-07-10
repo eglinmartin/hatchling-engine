@@ -1,6 +1,6 @@
 -- entity.lua
-local Class = require("lib.class")
-local flux = require("lib.flux")
+local Class = require("engine.lib.class")
+local flux = require("engine.lib.flux")
 
 local Entity = Class{}
 

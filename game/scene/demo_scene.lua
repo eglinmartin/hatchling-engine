@@ -1,4 +1,4 @@
-local Class = require("lib.class")
+local Class = require("engine.lib.class")
 local Colours = require("game.constants.colours")
 local CounterMoveable = require("game.entity.counter_moveable")
 local DemoScene = Class{}

@@ -1,6 +1,6 @@
-local Class = require("lib.class")
-local peachy = require("lib.peachy")
-local rs = require("lib.resolution_solution")
+local Class = require("engine.lib.class")
+local peachy = require("engine.lib.peachy")
+local rs = require("engine.lib.resolution_solution")
 
 local Colours = require("game.constants.colours")
 

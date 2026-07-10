@@ -1,5 +1,5 @@
-local Class = require("lib.class")
-local rs = require("lib.resolution_solution")
+local Class = require("engine.lib.class")
+local rs = require("engine.lib.resolution_solution")
 
 local InputManager = Class{}
 

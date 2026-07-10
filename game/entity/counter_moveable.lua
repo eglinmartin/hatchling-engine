@@ -1,7 +1,7 @@
 -- player.lua
-local Class = require("lib.class")
+local Class = require("engine.lib.class")
 local Entity = require("engine.entity")
-local flux = require("lib.flux")
+local flux = require("engine.lib.flux")
 local Counter = Class{__includes = Entity}
 
 

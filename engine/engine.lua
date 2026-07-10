@@ -1,4 +1,4 @@
-local Class = require("lib.class")
+local Class = require("engine.lib.class")
 local Engine = Class{}
 
 local EventManager = require("engine.event_manager")

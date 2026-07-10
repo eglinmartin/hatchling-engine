@@ -1,5 +1,5 @@
-local flux = require("lib.flux")
-local rs = require("lib.resolution_solution")
+local flux = require("engine.lib.flux")
+local rs = require("engine.lib.resolution_solution")
 local Engine = require("engine.engine")
 local Game = require("game.game")
 

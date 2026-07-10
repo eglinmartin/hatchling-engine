@@ -1,4 +1,4 @@
-local Class = require("lib.class")
+local Class = require("engine.lib.class")
 local Game = Class{}
 local DemoScene = require("game.scene.demo_scene")
 
