@@ -99,6 +99,7 @@ end
 function Entity:update(dt, mx, my, mouse_down, mouse_pressed)
     -- Update inputs
     self:update_input(dt, mx, my, mouse_down, mouse_pressed)
+    self:update_sine_waves(dt)
     
     if self.x ~= self.xprevious or self.y ~= self.yprevious or self.scale ~= self.scaleprevious or self.rotation ~= self.rotationprevious then
         self:create_sprite()
@@ -215,6 +216,58 @@ function Entity:on_drag_end()
 
     local target_scale = self.hovered and 1.1 or 1
     self.tween = flux.to(self, 0.5, {x=self.original_x, y=self.original_y, scale=target_scale}):ease("expoout"):oncomplete(function() self.depth = self.original_depth end)
+end
+
+
+function Entity:start_sine_wave(var, args)
+    args = args or {}
+    self.sine_waves = self.sine_waves or {}
+    self.sine_waves[var] = {
+        origin     = self[var] or 0,
+        amplitude  = args.amplitude or 20,
+        frequency  = args.frequency or 1,
+        phase      = args.phase or 0,
+        offset     = args.offset or 0,
+        time       = 0,
+        paused     = args.paused or false,
+    }
+end
+
+
+function Entity:pause_sine_wave(var)
+    if not self.sine_waves then return end
+    local sw = self.sine_waves[var]
+    if sw then sw.paused = true end
+end
+
+
+function Entity:resume_sine_wave(var)
+    if not self.sine_waves then return end
+    local sw = self.sine_waves[var]
+    if sw then sw.paused = false end
+end
+
+
+function Entity:stop_sine_wave(var)
+    if not self.sine_waves then return end
+    if var then
+        self.sine_waves[var] = nil
+    else
+        self.sine_waves = nil
+    end
+end
+
+
+function Entity:update_sine_waves(dt)
+    if not self.sine_waves then return end
+
+    for var, sw in pairs(self.sine_waves) do
+        if not sw.paused then
+            sw.time = sw.time + dt
+            self[var] = sw.origin + sw.offset
+                + sw.amplitude * math.sin(sw.time * sw.frequency * (2 * math.pi) + sw.phase)
+        end
+    end
 end
 
 

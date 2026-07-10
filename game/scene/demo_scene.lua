@@ -38,6 +38,11 @@ function DemoScene:enter()
     self.counter_moveable = CounterMoveable(self, 1440, 580)
     table.insert(self.entities, self.counter_moveable)
     self.engine.render_manager:create_text_object("text_moveable", "Moveable", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1440, 440, 0, 1, 2, "centre")
+    
+    self.counter_sine_wave = Entity(self, "counter_sine_wave", {x=1440, y=920, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="pink", depth=155, hoverable=true, clickable=true})
+    table.insert(self.entities, self.counter_sine_wave)
+    self.counter_sine_wave:start_sine_wave('x', {amplitude = 160, frequency = 0.25, paused=true})
+    self.engine.render_manager:create_text_object("text_sine_wave", "Static (Sine Wave)", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1440, 780, 0, 1, 2, "centre")
 end
 
 
@@ -51,6 +56,12 @@ end
 function DemoScene:trigger(trigger_id)
     if trigger_id == "counter_clickable" then
         print('Clicked')
+    elseif trigger_id == "counter_sine_wave" then
+        if self.counter_sine_wave.sine_waves["x"] and not self.counter_sine_wave.sine_waves["x"].paused then
+            self.counter_sine_wave:pause_sine_wave("x")
+        else
+            self.counter_sine_wave:resume_sine_wave("x")
+        end
     end
 end
 
