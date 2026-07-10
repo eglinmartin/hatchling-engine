@@ -92,6 +92,9 @@ function RenderManager:init(engine)
     self:setup_events()
     self.colours = Colours
 
+    self.cursor_arrow = love.mouse.getSystemCursor("arrow")
+    self.cursor_hand = love.mouse.getSystemCursor("hand")
+
     -- self.font = love.graphics.newFont("assets/Curtel.ttf", 16)
     -- love.graphics.setFont(self.font)
     

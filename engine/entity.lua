@@ -111,6 +111,8 @@ function Entity:drag()
     self.x = self.engine.input_manager.mx
     self.y = self.engine.input_manager.my
     self.depth = 254
+    
+    love.mouse.setCursor(self.engine.render_manager.cursor_hand)
     self:create_sprite()
 end
 
@@ -151,7 +153,7 @@ function Entity:update_input(dt, mx, my, mouse_down, mouse_pressed)
         if self.dragging then
             self:on_drag_start()
         else
-            self:on_drag_end(dt)
+            self:on_drag_end()
         end
     end
     if self.dragging then
@@ -167,11 +169,13 @@ end
 
 function Entity:on_hover_start()
     flux.to(self, 0.25, {scale=1.1}):ease("expoout")
+    love.mouse.setCursor(self.engine.render_manager.cursor_hand)
 end
 
 
 function Entity:on_hover_end()
     flux.to(self, 0.25, {scale=1}):ease("expoout")
+    love.mouse.setCursor(self.engine.render_manager.cursor_arrow)
 end
 
 
@@ -193,12 +197,17 @@ function Entity:on_drag_start()
     self.tween = flux.to(self, 0.5, {scale=1.25}):ease("expoout")
 end
 
+
 function Entity:on_drag_end()
     if self.tween then self.tween:stop() end
     self.dragging = false
     self.released = true
     self.release_x = self.x
     self.release_y = self.y
+
+    if not self.hovered then
+        love.mouse.setCursor(self.engine.render_manager.cursor_arrow)
+    end
 
     local target_scale = self.hovered and 1.1 or 1
     self.tween = flux.to(self, 0.5, {x=self.original_x, y=self.original_y, scale=target_scale}):ease("expoout"):oncomplete(function() self.depth = self.original_depth end)
