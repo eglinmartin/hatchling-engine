@@ -8,6 +8,7 @@ local SceneManager = require("engine.scene_manager")
 
 
 function Engine:init()
+    self.version = 0.1
     self.event_manager = EventManager(self)
     self.input_manager = InputManager(self)
     self.render_manager = RenderManager(self)
