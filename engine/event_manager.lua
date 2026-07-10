@@ -5,14 +5,17 @@ local EventManager = Class{}
 
 local Events = {
     TOGGLE_FULLSCREEN = 'toggle fullscreen',
-    MOUSEPRESSED = 'mouse pressed',
-    MOUSERELEASED = 'mouse released',
 }
 
 
 function EventManager:init()
     self.events = Events
     self.listeners = {}
+end
+
+
+function EventManager:add_event(id)
+    self.events[id] = id
 end
 
 

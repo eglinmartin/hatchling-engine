@@ -23,6 +23,11 @@ function InputManager:init(engine)
 end
 
 
+function InputManager:add_keybind(key, action)
+    self.keybinds[key] = action
+end
+
+
 function InputManager:update(dt)
     local raw_mx, raw_my = love.mouse.getPosition()
     self.mx, self.my = rs.to_game(raw_mx, raw_my)
@@ -32,6 +37,12 @@ function InputManager:update(dt)
     self.mouse_released = false
     self.keys_pressed = {}
     self.keys_released = {}
+
+    for key, action in pairs(self.keybinds) do
+        if love.keyboard.isDown(key) then
+            self.engine.event_manager:trigger(action, dt)
+        end
+    end
 end
 
 

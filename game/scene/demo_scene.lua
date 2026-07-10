@@ -1,5 +1,6 @@
 local Class = require("lib.class")
 local Colours = require("game.constants.colours")
+local CounterMoveable = require("game.entity.counter_moveable")
 local DemoScene = Class{}
 local Entity = require("engine.entity")
 
@@ -8,7 +9,12 @@ function DemoScene:init(game, engine)
     self.game = game
     self.engine = engine
     self.entities = {}
-    self.entities["player"] = self.player
+
+    self.engine.scene_manager:create_keybind("MOVE_LEFT", "left", function() self.counter_moveable:move_left() end)
+    self.engine.scene_manager:create_keybind("MOVE_LEFT", "a", function() self.counter_moveable:move_left() end)
+
+    self.engine.scene_manager:create_keybind("MOVE_RIGHT", "right", function() self.counter_moveable:move_right() end)
+    self.engine.scene_manager:create_keybind("MOVE_RIGHT", "d", function() self.counter_moveable:move_right() end)
 end
 
 
@@ -28,6 +34,10 @@ function DemoScene:enter()
     self.counter_static = Entity(self, "counter_static", {x=1600, y=240, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="black", depth=155})
     table.insert(self.entities, self.counter_static)
     self.engine.render_manager:create_text_object("text_static", "Static", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1600, 100, 0, 1, 2, "centre")
+
+    self.counter_moveable = CounterMoveable(self, 1440, 580)
+    table.insert(self.entities, self.counter_moveable)
+    self.engine.render_manager:create_text_object("text_moveable", "Moveable", self.game.font_gil_sans_ultra_bold_32, Colours.COLOR43, 1440, 440, 0, 1, 2, "centre")
 end
 
 
@@ -43,7 +53,6 @@ function DemoScene:trigger(trigger_id)
         print('Clicked')
     end
 end
-
 
 
 function DemoScene:exit()

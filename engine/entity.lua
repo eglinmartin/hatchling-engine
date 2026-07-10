@@ -23,6 +23,8 @@ function Entity:init(scene, id, args)
     -- Create theoretical positions
     self.shadow_x = self.x
     self.shadow_y = self.y
+    self.original_x = self.x
+    self.original_y = self.y
     
     -- Get interaction information
     if args.hoverable then self.hoverable = args.hoverable or false end
@@ -46,6 +48,8 @@ function Entity:init(scene, id, args)
     if self.sprite_sheet and self.sprite_tag then
         self:create_sprite()
     end
+
+    self.velocity = 0
 end
 
 

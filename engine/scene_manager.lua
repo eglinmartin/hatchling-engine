@@ -40,6 +40,14 @@ function SceneManager:update(dt)
 end
 
 
+function SceneManager:create_keybind(action, key, func)
+    self.engine.event_manager:add_event(action)
+    self.engine.input_manager:add_keybind(key, self.engine.event_manager.events[action])
+    self.engine.event_manager:on(self.engine.event_manager.events[action], self, func)
+end
+
+
+
 function SceneManager:draw()
     if self.current_scene and self.current_scene.draw then
         self.current_scene:draw()
