@@ -8,17 +8,14 @@ local Entity = require("engine.entity")
 function DemoScene:init(game, engine)
     self.game = game
     self.engine = engine
-    self.entities = {}
-
-    self.engine.scene_manager:create_keybind("MOVE_LEFT", "left", function() self.counter_moveable:move_left() end)
-    self.engine.scene_manager:create_keybind("MOVE_LEFT", "a", function() self.counter_moveable:move_left() end)
-
-    self.engine.scene_manager:create_keybind("MOVE_RIGHT", "right", function() self.counter_moveable:move_right() end)
-    self.engine.scene_manager:create_keybind("MOVE_RIGHT", "d", function() self.counter_moveable:move_right() end)
 end
 
 
 function DemoScene:enter()
+    self.entities = {}
+    self:setup_keybinds()
+    self:setup_events()
+
     self.engine:add_background("background", "background", "demo", 960, 540, 0, 1, 0)
     self.engine:add_text("text_version", "v" .. tostring(self.engine.version), self.game.font_gil_sans_ultra_bold_32, Colours.COLOR45, 1890, 1010, 0, 1, 2, "right")
 
@@ -60,8 +57,28 @@ function DemoScene:trigger(trigger_id)
 end
 
 
+function DemoScene:setup_events()
+    self.engine.event_manager:on(self.engine.event_manager.events["MOVE_LEFT"], self, function()
+        self.counter_moveable:move_left()
+    end)
+
+    self.engine.event_manager:on(self.engine.event_manager.events["MOVE_RIGHT"], self, function()
+        self.counter_moveable:move_right()
+    end)
+end
+
+
+function DemoScene:setup_keybinds()
+    self.engine:create_keybind(self, "left", "MOVE_LEFT")
+    self.engine:create_keybind(self, "a", "MOVE_LEFT")
+    self.engine:create_keybind(self, "right", "MOVE_RIGHT")
+    self.engine:create_keybind(self, "d", "MOVE_RIGHT")
+end
+
+
 function DemoScene:exit()
     self.engine.event_manager:remove_owner(self)
+    self.engine.input_manager:remove_owner(self)
 end
 
 

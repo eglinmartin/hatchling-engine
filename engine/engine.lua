@@ -9,6 +9,7 @@ local SceneManager = require("engine.scene_manager")
 local VERSION = 0.1
 
 ---@alias RGBA number[] # {r, g, b, a}, each channel 0-1
+---@alias EventAction string  # One of the values defined in Events (see engine/event_manager.lua)
 
 
 --- Initialize engine and managers
@@ -72,6 +73,15 @@ end
 ---@param depth             number  Draw order depth (255 highest, 0 lowest)
 function Engine:add_background(background_id, background_name, background_tag, x, y, scale, rot, depth)
     self.render_manager:create_draw_object_background(background_id, background_name, background_tag, x, y, scale, rot, depth)
+end
+
+
+--- Add a keybind into the current scene
+--- @param scene    string          Name of the scene that owns the event
+--- @param key      string          Keyboard key to be pressed
+--- @param event    EventAction     Event to be triggered
+function Engine:create_keybind(scene, key, event)
+    self.scene_manager:create_keybind(scene, key, event)
 end
 
 

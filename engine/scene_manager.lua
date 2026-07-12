@@ -40,10 +40,9 @@ function SceneManager:update(dt)
 end
 
 
-function SceneManager:create_keybind(action, key, func)
-    self.engine.event_manager:add_event(action)
-    self.engine.input_manager:add_keybind(key, self.engine.event_manager.events[action])
-    self.engine.event_manager:on(self.engine.event_manager.events[action], self, func)
+function SceneManager:create_keybind(owner, key, event)
+    self.engine.event_manager:add_event(event)
+    self.engine.input_manager:add_keybind(key, self.engine.event_manager.events[event], owner)
 end
 
 

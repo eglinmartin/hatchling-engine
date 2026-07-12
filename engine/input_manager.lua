@@ -54,6 +54,14 @@ function InputManager:keypressed(key)
 end
 
 
+function InputManager:remove_owner(owner)
+    for _, key in ipairs(self.keybinds_by_owner[owner] or {}) do
+        self:remove_keybind(key)
+    end
+    self.keybinds_by_owner[owner] = nil
+end
+
+
 function InputManager:mousepressed(x, y, button)
     if button == 1 then
         self.mouse_pressed = true
