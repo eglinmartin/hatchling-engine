@@ -6,11 +6,14 @@ local InputManager = require("engine.input_manager")
 local RenderManager = require("engine.render_manager")
 local SceneManager = require("engine.scene_manager")
 
+local VERSION = 0.1
+
 ---@alias RGBA number[] # {r, g, b, a}, each channel 0-1
 
 
+--- Initialize engine and managers
 function Engine:init()
-    self.version = 0.1
+    self.version = VERSION
     self.event_manager = EventManager(self)
     self.input_manager = InputManager(self)
     self.render_manager = RenderManager(self)
@@ -18,6 +21,8 @@ function Engine:init()
 end
 
 
+--- Update all managers in game engine
+--- @param dt   number  Time in seconds since the last update
 function Engine:update(dt)
     self.input_manager:update(dt)
     self.render_manager:update(dt)
@@ -67,26 +72,6 @@ end
 ---@param depth             number  Draw order depth (255 highest, 0 lowest)
 function Engine:add_background(background_id, background_name, background_tag, x, y, scale, rot, depth)
     self.render_manager:create_draw_object_background(background_id, background_name, background_tag, x, y, scale, rot, depth)
-end
-
-
-function Engine:keypressed(key)
-    self.input_manager:keypressed(key)
-end
-
-
-function Engine:mousepressed(x, y, button)
-    self.input_manager:mousepressed(x, y, button)
-end
-
-
-function Engine:mousereleased(x, y, button)
-    self.input_manager:mousereleased(x, y, button)
-end
-
-
-function Engine:draw()
-    self.render_manager:draw()
 end
 
 

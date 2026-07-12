@@ -30,7 +30,7 @@ end
 
 
 function love.draw()
-    ENGINE:draw()
+    ENGINE.render_manager:draw()
 end
 
 
@@ -40,17 +40,17 @@ end
 
 
 function love.keypressed(key)
-    ENGINE:keypressed(key)
+    ENGINE.input_manager:keypressed(key)
 end
 
 
 function love.mousepressed(x, y, button)
-    ENGINE:mousepressed(x, y, button)
+    ENGINE.input_manager:mousepressed(x, y, button)
 end
 
 
 function love.mousereleased(x, y, button)
-    ENGINE:mousereleased(x, y, button)
+    ENGINE.input_manager:mousereleased(x, y, button)
 end
 
 
