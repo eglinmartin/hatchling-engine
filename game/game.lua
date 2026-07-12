@@ -13,12 +13,12 @@ function Game:init(engine)
     self:create_events()
     
     self:create_scenes()
-    self.engine.scene_manager:switch_scene("DEMO")
+    self.engine:switch_scene("DEMO")
 end
 
 
 function Game:create_scenes()
-    self.engine.scene_manager:add_scene("DEMO", DemoScene(self, self.engine))
+    self.engine:add_scene("DEMO", DemoScene(self, self.engine))
 end
 
 

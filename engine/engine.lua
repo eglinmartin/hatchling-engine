@@ -10,6 +10,7 @@ local VERSION = 0.1
 
 ---@alias RGBA number[] # {r, g, b, a}, each channel 0-1
 ---@alias EventAction string  # One of the values defined in Events (see engine/event_manager.lua)
+---@alias Scene string  # One of the values defined in Events (see engine/event_manager.lua)
 
 
 --- Initialize engine and managers
@@ -82,6 +83,19 @@ end
 --- @param event    EventAction     Event to be triggered
 function Engine:create_keybind(scene, key, event)
     self.scene_manager:create_keybind(scene, key, event)
+end
+
+
+--- Add a scene to the game
+--- @param id       string  
+--- @param scene    Scene   
+function Engine:add_scene(name, scene)
+    self.scene_manager:add_scene(name, scene)
+end
+
+
+function Engine:switch_scene(name)
+    self.scene_manager:switch_scene(name)
 end
 
 

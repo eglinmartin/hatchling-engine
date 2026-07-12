@@ -1,18 +1,20 @@
 local Class = require("engine.lib.class")
 local Colours = require("game.constants.colours")
 local CounterMoveable = require("game.entity.counter_moveable")
-local DemoScene = Class{}
 local Entity = require("engine.entity")
+local Scene = require("engine.scene")
+
+local DemoScene = Class{__includes = Scene}
 
 
 function DemoScene:init(game, engine)
-    self.game = game
-    self.engine = engine
+    Scene.init(self, game, engine)
 end
 
 
 function DemoScene:enter()
-    self.entities = {}
+    Scene.enter(self)
+
     self:setup_keybinds()
     self:setup_events()
 
@@ -30,17 +32,10 @@ function DemoScene:enter()
 
     self.counter_moveable = CounterMoveable(self, 1440, 580)
     table.insert(self.entities, self.counter_moveable)
-    
+
     self.counter_sine_wave = Entity(self, "counter_sine_wave", {x=1440, y=920, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="pink", depth=155, hoverable=true, clickable=true})
     table.insert(self.entities, self.counter_sine_wave)
     self.counter_sine_wave:start_sine_wave('x', {amplitude = 160, frequency = 0.25, paused=true})
-end
-
-
-function DemoScene:update(dt, mx, my, md, mp)
-    for _, entity in pairs(self.entities) do
-        entity:update(dt, mx, my, md, mp)
-    end
 end
 
 
@@ -73,12 +68,6 @@ function DemoScene:setup_keybinds()
     self.engine:create_keybind(self, "a", "MOVE_LEFT")
     self.engine:create_keybind(self, "right", "MOVE_RIGHT")
     self.engine:create_keybind(self, "d", "MOVE_RIGHT")
-end
-
-
-function DemoScene:exit()
-    self.engine.event_manager:remove_owner(self)
-    self.engine.input_manager:remove_owner(self)
 end
 
 
