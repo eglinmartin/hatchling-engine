@@ -3,11 +3,10 @@ local peachy = require("engine.lib.peachy")
 local rs = require("engine.lib.resolution_solution")
 
 local Colours = require("game.constants.colours")
+local DrawObject = require("engine.draw_object")
+local TextObject = require("engine.text_object")
 
 local RenderManager = Class{}
-local DrawObject = Class{}
-local TextObject = Class{}
-
 
 local shadowShader = love.graphics.newShader([[
     vec4 effect(vec4 color, Image tex, vec2 texCoords, vec2 screenCoords) {
@@ -24,67 +23,6 @@ local shadowShader = love.graphics.newShader([[
 local Shaders = {
     SHADOW = shadowShader
 }
-
-
-function DrawObject:init(name, sprite, x, y, scale, rot, depth)
-    self.name = name
-    self.sprite = sprite
-    self.depth = depth
-    
-    self.x = x
-    self.y = y
-    self.scale = scale
-    self.rot = rot * (math.pi / 180)
-end
-
-
-function DrawObject:move(x, y)
-    self.x = x
-    self.y = y
-end
-
-
-function DrawObject:resize(scale)
-    self.scale = scale
-end
-
-
-function DrawObject:rotate(rot)
-    self.rot = rot * (math.pi / 180)
-end
-
-
-function DrawObject:change_sprite(sprite_name, sprite_tag)
-    self.sprite = peachy.new(
-        "bin/json/" .. sprite_name .. ".json",
-        love.graphics.newImage("bin/sprites/" .. sprite_name .. ".png"),
-        sprite_tag
-    )
-end
-
-
-function DrawObject:update(dt)
-    self.sprite:update(dt)
-end
-
-
-function TextObject:init(name, text, font, colour, x, y, rot, scale, depth, align)
-    self.name = name
-    self.text = text
-    self.font = font
-    self.colour = colour
-    self.depth = depth
-    self.align = align
-    
-    self.x = x
-    self.y = y
-    self.rot = rot
-    self.scale = scale
-end
-
-
-function TextObject:update(dt)
-end
 
 
 function RenderManager:init(engine)
