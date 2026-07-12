@@ -19,8 +19,8 @@ end
 
 
 function DemoScene:enter()
-    self.engine.render_manager:create_draw_object_background("background", "background", "demo", 960, 540, 0, 1, 0)
-    self.engine.render_manager:create_text_object("text_version", "v" .. tostring(self.engine.version), self.game.font_gil_sans_ultra_bold_32, Colours.COLOR45, 1890, 1010, 0, 1, 2, "right")
+    self.engine:add_background("background", "background", "demo", 960, 540, 0, 1, 0)
+    self.engine:add_text("text_version", "v" .. tostring(self.engine.version), self.game.font_gil_sans_ultra_bold_32, Colours.COLOR45, 1890, 1010, 0, 1, 2, "right")
 
     self.counter_draggable = Entity(self, "counter_draggable", {x=960, y=240, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="red", depth=155, hoverable=true, draggable=true, clickable=true})
     table.insert(self.entities, self.counter_draggable)

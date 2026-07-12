@@ -77,11 +77,11 @@ end
 function Entity:create_sprite()
     -- Create sprite on screen
     if self.background then
-        self.engine.render_manager:create_draw_object_background(
+        self.engine.render_manager:add_background(
         self.id, self.sprite_sheet, self.sprite_tag, self.x, self.y, self.rotation, self.scale, self.depth
     )
     else
-        self.engine.render_manager:create_draw_object_foreground(
+        self.engine:add_sprite(
             self.id, self.sprite_sheet, self.sprite_tag, self.x, self.y, self.rotation, self.scale, self.depth
         )
     end
