@@ -1,12 +1,12 @@
 local Class = require("engine.lib.class")
 local Engine = Class{}
 
-local EventManager = require("engine.event_manager")
-local InputManager = require("engine.input_manager")
-local RenderManager = require("engine.render_manager")
-local SceneManager = require("engine.scene_manager")
+local EventManager = require("engine.manager.event_manager")
+local InputManager = require("engine.manager.input_manager")
+local RenderManager = require("engine.manager.render_manager")
+local SceneManager = require("engine.manager.scene_manager")
 
-local Entity = require("engine.entity")
+local Entity = require("engine.class.entity")
 
 local VERSION = 0.1
 

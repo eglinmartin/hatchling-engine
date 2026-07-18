@@ -3,8 +3,8 @@ local peachy = require("engine.lib.peachy")
 local rs = require("engine.lib.resolution_solution")
 
 local Colours = require("game.constants.colours")
-local DrawObject = require("engine.draw_object")
-local TextObject = require("engine.text_object")
+local DrawObject = require("engine.class.draw_object")
+local TextObject = require("engine.class.text_object")
 
 local RenderManager = Class{}
 
