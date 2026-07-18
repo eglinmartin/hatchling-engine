@@ -7,7 +7,9 @@ local Counter = Class{__includes = Entity}
 
 function Counter:init(scene, x, y)
     self.base_y = y
+
     Entity.init(self, scene, "counter_moveable", {x=x, y=self.base_y, w=160, h=160, s=1, r=0, sprite_sheet="counters", sprite_tag="blue", depth=155, hoverable=true, draggable=true})
+    scene.engine:register_entity("counter_moveable", self)
 
     self.velocity_x = 0
     self.max_speed = 1000

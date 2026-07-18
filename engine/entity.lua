@@ -168,7 +168,7 @@ end
 
 
 function Entity:clear_sprite()
-    self.render_manager.draw_objects_foreground[self.id] = nil
+    self.engine.render_manager.draw_objects_foreground[self.id] = nil
 end
 
 
@@ -219,7 +219,12 @@ function Entity:on_drag_end()
 end
 
 
-function Entity:start_sine_wave(var, args)
+function Entity:set_sine_wave(var, args)
+    self.sine_waves = self.sine_waves or {}
+    if self.sine_waves[var] then
+        return
+    end
+    
     args = args or {}
     self.sine_waves = self.sine_waves or {}
     self.sine_waves[var] = {
@@ -229,26 +234,26 @@ function Entity:start_sine_wave(var, args)
         phase      = args.phase or 0,
         offset     = args.offset or 0,
         time       = 0,
-        paused     = args.paused or false,
+        paused     = true,
     }
 end
 
 
-function Entity:pause_sine_wave(var)
+function Entity:stop_sine_wave(var)
     if not self.sine_waves then return end
     local sw = self.sine_waves[var]
     if sw then sw.paused = true end
 end
 
 
-function Entity:resume_sine_wave(var)
+function Entity:start_sine_wave(var)
     if not self.sine_waves then return end
     local sw = self.sine_waves[var]
     if sw then sw.paused = false end
 end
 
 
-function Entity:stop_sine_wave(var)
+function Entity:remove_sine_wave(var)
     if not self.sine_waves then return end
     if var then
         self.sine_waves[var] = nil

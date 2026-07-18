@@ -9,6 +9,7 @@ function InputManager:init(engine)
     self.keybinds = {
         ["f11"] = engine.event_manager.events.TOGGLE_FULLSCREEN,
     }
+    self.keybinds_by_owner = {}
 
     self.mx = 0
     self.my = 0

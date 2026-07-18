@@ -6,6 +6,7 @@ function SceneManager:init(engine, game)
     self.engine = engine
     self.game = game
 
+    self.global_entities = {}
     self.scenes = {}
     self.current_scene = nil
 end
@@ -30,12 +31,20 @@ function SceneManager:switch_scene(name)
     if self.current_scene.enter then
         self.current_scene:enter()
     end
+
+    for _, entity in pairs(self.global_entities) do
+        entity:create_sprite()
+    end
 end
 
 
-function SceneManager:update(dt)
+function SceneManager:update(dt, mx, my, md, mp)
     if self.current_scene and self.current_scene.update then
-        self.current_scene:update(dt, self.engine.input_manager.mx, self.engine.input_manager.my, self.engine.input_manager.mouse_down, self.engine.input_manager.mouse_pressed)
+        self.current_scene:update(dt, mx, my, md, mp)
+    end
+    
+    for _, entity in pairs(self.global_entities) do
+        entity:update(dt, mx, my, md, mp)
     end
 end
 

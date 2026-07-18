@@ -6,6 +6,8 @@ local InputManager = require("engine.input_manager")
 local RenderManager = require("engine.render_manager")
 local SceneManager = require("engine.scene_manager")
 
+local Entity = require("engine.entity")
+
 local VERSION = 0.1
 
 ---@alias RGBA number[] # {r, g, b, a}, each channel 0-1
@@ -28,7 +30,7 @@ end
 function Engine:update(dt)
     self.input_manager:update(dt)
     self.render_manager:update(dt)
-    self.scene_manager:update(dt)
+    self.scene_manager:update(dt, self.input_manager.mx, self.input_manager.my, self.input_manager.mouse_down, self.input_manager.mouse_pressed)
     self.input_manager.mouse_pressed = false
 end
 
@@ -44,6 +46,60 @@ end
 ---@param depth         number  Draw order depth (255 highest, 0 lowest)
 function Engine:add_sprite(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
     self.render_manager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
+end
+
+
+--- Create a new entity in the current scene
+---@param id    string  Unique ID for the entity to be queried
+---@param args  table   Table of arguments used to construct the entity
+function Engine:create_entity(id, args)
+    self.scene_manager.current_scene.entities = self.scene_manager.current_scene.entities or {}
+    for _, e in ipairs(self.scene_manager.current_scene.entities) do
+        if e.id == id then
+            return
+        end
+    end
+    self.scene_manager.current_scene.entities[id] = Entity(self.scene_manager.current_scene, id, args)
+end
+
+
+--- Register an existing entity in the current scene
+---@param id    string  Unique ID for the entity to be queried
+function Engine:register_entity(id, entity)
+    self.scene_manager.current_scene.entities[id] = entity
+end
+
+
+--- Remove an existing entity from the current scene
+---@param id    string  Entity ID
+function Engine:remove_entity(id)
+    self.scene_manager.current_scene.entities[id] = nil
+end
+
+
+--- Create a new global entity in the scene manager
+---@param id    string  Unique ID for the entity to be queried
+---@param args  table   Table of arguments used to construct the entity
+function Engine:create_global_entity(id, args)
+    self.scene_manager.global_entities = self.scene_manager.global_entities or {}
+    if self.scene_manager.global_entities[id] then
+        return
+    end
+    self.scene_manager.global_entities[id] = Entity(self.scene_manager.current_scene, id, args)
+end
+
+
+--- Remove an existing global entity from the scene manager
+---@param id    string  Unique ID for the entity to be queried
+function Engine:register_global_entity(id, entity)
+    self.scene_manager.global_entities[id] = entity
+end
+
+
+--- Remove an existing global entity from the scene manager
+---@param id    string  Entity ID
+function Engine:remove_global_entity(id)
+    self.scene_manager.current_scene.entities[id] = nil
 end
 
 
@@ -87,13 +143,15 @@ end
 
 
 --- Add a scene to the game
---- @param id       string  
---- @param scene    Scene   
+--- @param name     string  Unique name of scene
+--- @param scene    Scene   Scene instance
 function Engine:add_scene(name, scene)
     self.scene_manager:add_scene(name, scene)
 end
 
 
+--- Switch game scene
+--- @param name     string  Unique name of scene
 function Engine:switch_scene(name)
     self.scene_manager:switch_scene(name)
 end
