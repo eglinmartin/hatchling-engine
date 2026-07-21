@@ -99,30 +99,16 @@ end
 
 
 function RenderManager:create_draw_object_background(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
-    self.draw_objects_background[sprite_id] =
-        DrawObject(
-            sprite_id,
-            peachy.new(
-                "game/bin/background/json/" .. sprite_name .. ".json",
-                self:get_image("game/bin/background/" .. sprite_name .. ".png"),
-                sprite_tag
-            ),
-            x, y, rot, scale, depth
-        )
+    local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
+    draw_obj:change_sprite(sprite_name, sprite_tag, "game/bin/background/")
+    self.draw_objects_background[sprite_id] = draw_obj
 end
 
 
 function RenderManager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
-    self.draw_objects_foreground[sprite_id] =
-        DrawObject(
-            sprite_id,
-            peachy.new(
-                "game/bin/sprite/json/" .. sprite_name .. ".json",
-                self:get_image("game/bin/sprite/" .. sprite_name .. ".png"),
-                sprite_tag
-            ),
-            x, y, rot, scale, depth
-        )
+    local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
+    draw_obj:change_sprite(sprite_name, sprite_tag, "game/bin/sprite/")
+    self.draw_objects_foreground[sprite_id] = draw_obj
 end
 
 
