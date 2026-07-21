@@ -53,27 +53,21 @@ end
 ---@param id    string  Unique ID for the entity to be queried
 ---@param args  table   Table of arguments used to construct the entity
 function Engine:create_entity(id, args)
-    self.scene_manager.current_scene.entities = self.scene_manager.current_scene.entities or {}
-    for _, e in ipairs(self.scene_manager.current_scene.entities) do
-        if e.id == id then
-            return
-        end
-    end
-    self.scene_manager.current_scene.entities[id] = Entity(self.scene_manager.current_scene, id, args)
+    self.scene_manager:create_entity(id, args, "local")
 end
 
 
 --- Register an existing entity in the current scene
 ---@param id    string  Unique ID for the entity to be queried
 function Engine:register_entity(id, entity)
-    self.scene_manager.current_scene.entities[id] = entity
+    self.scene_manager:register_entity(id, entity, "local")
 end
 
 
 --- Remove an existing entity from the current scene
 ---@param id    string  Entity ID
 function Engine:remove_entity(id)
-    self.scene_manager.current_scene.entities[id] = nil
+    self.scene_manager:remove_global_entity(id, "local")
 end
 
 
@@ -81,25 +75,21 @@ end
 ---@param id    string  Unique ID for the entity to be queried
 ---@param args  table   Table of arguments used to construct the entity
 function Engine:create_global_entity(id, args)
-    self.scene_manager.global_entities = self.scene_manager.global_entities or {}
-    if self.scene_manager.global_entities[id] then
-        return
-    end
-    self.scene_manager.global_entities[id] = Entity(self.scene_manager.current_scene, id, args)
+    self.scene_manager:create_entity(id, args, "global")
 end
 
 
 --- Remove an existing global entity from the scene manager
 ---@param id    string  Unique ID for the entity to be queried
 function Engine:register_global_entity(id, entity)
-    self.scene_manager.global_entities[id] = entity
+    self.scene_manager:register_entity(id, entity, "global")
 end
 
 
 --- Remove an existing global entity from the scene manager
 ---@param id    string  Entity ID
 function Engine:remove_global_entity(id)
-    self.scene_manager.current_scene.entities[id] = nil
+    self.scene_manager:remove_global_entity(id, "global")
 end
 
 

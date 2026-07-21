@@ -1,4 +1,5 @@
 local Class = require("engine.lib.class")
+local Entity = require("engine.class.entity")
 local SceneManager = Class{}
 
 
@@ -14,6 +15,40 @@ end
 
 function SceneManager:add_scene(name, scene)
     self.scenes[name] = scene
+end
+
+
+function SceneManager:create_entity(id, args, scope)
+    local entities_handler = self.current_scene.entities
+    if scope == 'global' then
+        entities_handler = self.global_entities
+    end
+
+    entities_handler = entities_handler or {}
+    for _, e in ipairs(entities_handler) do
+        if e.id == id then
+            return
+        end
+    end
+    entities_handler[id] = Entity(self.current_scene, id, args)
+end
+
+
+function SceneManager:register_entity(id, entity, scope)
+    local entities_handler = self.current_scene.entities
+    if scope == 'global' then
+        entities_handler = self.global_entities
+    end
+    entities_handler[id] = entity
+end
+
+
+function SceneManager:remove_entity(id, scope)
+    local entities_handler = self.current_scene.entities
+    if scope == 'global' then
+        entities_handler = self.global_entities
+    end
+    entities_handler[id] = nil
 end
 
 
