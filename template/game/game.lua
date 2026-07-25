@@ -1,4 +1,4 @@
-local Class = require("engine.lib.class")
+local Class = require("hatchling.engine.lib.class")
 local Game = Class{}
 
 
