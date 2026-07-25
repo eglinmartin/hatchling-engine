@@ -1,7 +1,7 @@
 local flux = require("engine.lib.flux")
 local rs = require("engine.lib.resolution_solution")
 local Engine = require("engine.hatchling")
-local Game = require("game.game")
+local Game = require("demo.demo")
 
 
 if arg and arg[2] == "debug" then
