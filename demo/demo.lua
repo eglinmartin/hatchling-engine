@@ -18,8 +18,8 @@ end
 
 
 function Game:load_fonts()
-    self.font_gil_sans_ultra_bold_32 = love.graphics.newFont("game/font/GILSANUB.TTF", 32)
-    self.font_gil_sans_ultra_bold_64 = love.graphics.newFont("game/font/GILSANUB.TTF", 64)
+    self.font_gil_sans_ultra_bold_32 = love.graphics.newFont("demo/font/GILSANUB.TTF", 32)
+    self.font_gil_sans_ultra_bold_64 = love.graphics.newFont("demo/font/GILSANUB.TTF", 64)
 end
 
 

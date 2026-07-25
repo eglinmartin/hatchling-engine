@@ -1,8 +1,6 @@
 local Class = require("engine.lib.class")
-local peachy = require("engine.lib.peachy")
 local rs = require("engine.lib.resolution_solution")
 
-local Colours = require("game.constants.colours")
 local DrawObject = require("engine.class.draw_object")
 local TextObject = require("engine.class.text_object")
 
@@ -25,10 +23,11 @@ local Shaders = {
 }
 
 
-function RenderManager:init(engine)
+function RenderManager:init(engine, bin_path)
     self.engine = engine
+    self.bin_path = bin_path
+
     self:setup_events()
-    self.colours = Colours
 
     self.cursor_arrow = love.mouse.getSystemCursor("arrow")
     self.cursor_hand = love.mouse.getSystemCursor("hand")
@@ -100,14 +99,14 @@ end
 
 function RenderManager:create_draw_object_background(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
     local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
-    draw_obj:change_sprite(sprite_name, sprite_tag, "game/bin/background/")
+    draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/background/")
     self.draw_objects_background[sprite_id] = draw_obj
 end
 
 
 function RenderManager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
     local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
-    draw_obj:change_sprite(sprite_name, sprite_tag, "game/bin/sprite/")
+    draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/sprite/")
     self.draw_objects_foreground[sprite_id] = draw_obj
 end
 

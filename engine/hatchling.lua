@@ -16,11 +16,11 @@ local VERSION = 0.1
 
 
 --- Initialize engine and managers
-function Engine:init()
+function Engine:init(bin_path)
     self.version = VERSION
     self.event_manager = EventManager(self)
     self.input_manager = InputManager(self)
-    self.render_manager = RenderManager(self)
+    self.render_manager = RenderManager(self, bin_path)
     self.scene_manager = SceneManager(self)
 end
 
