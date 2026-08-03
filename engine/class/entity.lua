@@ -17,14 +17,31 @@ function Entity:init(scene, id, args)
     if args.y then self.y = args.y or 0 end
     if args.w then self.width = args.w or 0 end
     if args.h then self.height = args.h or 0 end
-    if args.s then self.scale = args.s or 1 end
+
+    -- scale: accept a single number (uniform) or {x, y} table
+    if args.s then
+        if type(args.s) == "table" then
+            self.scale_x = args.s[1]
+            self.scale_y = args.s[2]
+        else
+            self.scale_x = args.s
+            self.scale_y = args.s
+        end
+    end
+
     if args.r then self.rotation = args.r * (math.pi / 180) end
+
+    -- mirror state
+    self.flip_x = args.flip_x or false
+    self.flip_y = args.flip_y or false
 
     -- Create theoretical positions
     self.shadow_x = self.x
     self.shadow_y = self.y
     self.original_x = self.x
     self.original_y = self.y
+    
+    self.animation_speed = args.animation_speed or 1
     
     -- Get interaction information
     if args.hoverable then self.hoverable = args.hoverable or false end
@@ -62,8 +79,43 @@ function Entity:move(x, y)
 end
 
 
-function Entity:rescale(scale)
-    self.scale = scale * (math.pi / 180)
+-- rescale(sx, sy) -- sy defaults to sx for uniform scaling
+function Entity:rescale(scale_x, scale_y)
+    self.scale_x = scale_x
+    self.scale_y = scale_y or scale_x
+    self:create_sprite()
+end
+
+
+function Entity:mirror(horizontal, vertical)
+    if horizontal ~= nil then self.flip_x = horizontal end
+    if vertical ~= nil then self.flip_y = vertical end
+    self:create_sprite()
+end
+
+
+function Entity:rescale_x(val)
+    self.scale_x = val
+    self:create_sprite()
+end
+
+function Entity:rescale_y(val)
+    self.scale_y = val
+    self:create_sprite()
+end
+
+
+
+-- signed scale actually handed to the renderer
+function Entity:get_draw_scale()
+    local sx = self.scale_x * (self.flip_x and -1 or 1)
+    local sy = self.scale_y * (self.flip_y and -1 or 1)
+    return sx, sy
+end
+
+
+function Entity:change_animation_speed(speed)
+    self.animation_speed = speed
     self:create_sprite()
 end
 
@@ -77,12 +129,12 @@ end
 function Entity:create_sprite()
     -- Create sprite on screen
     if self.background then
-        self.engine.render_manager:add_background(
-        self.id, self.sprite_sheet, self.sprite_tag, self.x, self.y, self.rotation, self.scale, self.depth
-    )
+        self.engine:add_background(
+            self.id, self.sprite_sheet, self.sprite_tag, self.x, self.y, {self.scale_x, self.scale_y}, self.rotation, self.depth
+        )
     else
         self.engine:add_sprite(
-            self.id, self.sprite_sheet, self.sprite_tag, self.x, self.y, self.rotation, self.scale, self.depth
+            self.id, self.sprite_sheet, self.sprite_tag, self.x, self.y, {self.scale_x, self.scale_y}, self.rotation, self.depth
         )
     end
 end
@@ -173,13 +225,12 @@ end
 
 
 function Entity:on_hover_start()
-    flux.to(self, 0.25, {scale=1.1}):ease("expoout")
     love.mouse.setCursor(self.engine.render_manager.cursor_hand)
 end
 
 
 function Entity:on_hover_end()
-    flux.to(self, 0.25, {scale=1}):ease("expoout")
+    -- self.engine.flux.to(self, 0.25, {scale=1}):ease("expoout")
     love.mouse.setCursor(self.engine.render_manager.cursor_arrow)
 end
 

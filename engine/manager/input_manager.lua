@@ -1,5 +1,4 @@
 local Class = require("engine.lib.class")
-local rs = require("engine.lib.resolution_solution")
 
 local InputManager = Class{}
 
@@ -29,7 +28,7 @@ function InputManager:add_keybind(key, action)
 end
 
 
-function InputManager:update(dt)
+function InputManager:update(dt, rs)
     local raw_mx, raw_my = love.mouse.getPosition()
     self.mx, self.my = rs.to_game(raw_mx, raw_my)
     self.mouse_down = love.mouse.isDown(1)

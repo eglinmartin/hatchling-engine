@@ -5,15 +5,23 @@ local DrawObject = Class{}
 local StaticSprite = require("engine.class.sprite_static")
 
 
-function DrawObject:init(name, sprite, x, y, scale, rot, depth)
+function DrawObject:init(name, sprite, x, y, rot, scale, depth)
     self.name = name
     self.sprite = sprite
     self.depth = depth
-    
+
     self.x = x
     self.y = y
-    self.scale = scale
     self.rot = rot * (math.pi / 180)
+    if type(scale) == "table" then
+        self.scale_x = scale[1]
+        self.scale_y = scale[2]
+    else
+        self.scale_x = scale
+        self.scale_y = scale
+    end
+    
+    self.animation_speed = 0.1
 end
 
 
@@ -33,6 +41,15 @@ function DrawObject:rotate(rot)
 end
 
 
+function DrawObject:rescale_x(val)
+    self.scale_x = val
+end
+
+function DrawObject:rescale_y(val)
+    self.scale_y = val
+end
+
+
 function DrawObject:change_sprite(sprite_name, sprite_tag, base_path)
     local json_path = base_path .. "json/" .. sprite_name .. ".json"
     local image_path = base_path .. sprite_name .. ".png"
@@ -46,7 +63,12 @@ end
 
 
 function DrawObject:update(dt)
-    self.sprite:update(dt)
+    self.sprite:update(dt * self.animation_speed)
+end
+
+
+function DrawObject:set_animation_speed(speed)
+    self.animation_speed = speed
 end
 
 

@@ -18,7 +18,7 @@ function love.load()
     rs.conf({game_width = GAME_SIZE[1], game_height = GAME_SIZE[2], pixel_perfect = true})
     rs.setMode(WINDOW_SIZE[1], WINDOW_SIZE[2], {fullscreen = false})
 
-    ENGINE = Engine(BIN_PATH)
+    ENGINE = Engine(BIN_PATH, rs)
     GAME = Game(ENGINE)
 end
 

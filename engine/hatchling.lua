@@ -16,36 +16,25 @@ local VERSION = 0.1
 
 
 --- Initialize engine and managers
-function Engine:init(bin_path)
+function Engine:init(bin_path, rs, flux)
     self.version = VERSION
+    self.rs = rs
+    self.flux = flux
+
     self.event_manager = EventManager(self)
     self.input_manager = InputManager(self)
-    self.render_manager = RenderManager(self, bin_path)
-    self.scene_manager = SceneManager(self)
+    self.render_manager = RenderManager(self, bin_path, rs)
+    self.scene_manager = SceneManager(self, flux)
 end
 
 
 --- Update all managers in game engine
 --- @param dt   number  Time in seconds since the last update
 function Engine:update(dt)
-    self.input_manager:update(dt)
+    self.input_manager:update(dt, self.render_manager.rs)
     self.render_manager:update(dt)
     self.scene_manager:update(dt, self.input_manager.mx, self.input_manager.my, self.input_manager.mouse_down, self.input_manager.mouse_pressed)
     self.input_manager.mouse_pressed = false
-end
-
-
---- Add a sprite object to the foreground draw queue in render manager.
----@param sprite_id     string  ID for sprite object used for querying - must be unique
----@param sprite_name   string  Name of sprite png file
----@param sprite_tag    string  Tag of sprite in aseprite json
----@param x             number  X position on screen
----@param y             number  Y position on screen
----@param scale         number  Scale factor
----@param rot           number  Angle of rotation in degrees
----@param depth         number  Draw order depth (255 highest, 0 lowest)
-function Engine:add_sprite(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
-    self.render_manager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
 end
 
 
@@ -106,6 +95,20 @@ end
 ---@param align         string      Alignment of text - left, centre or right
 function Engine:add_text(text_id, string, font, colour, x, y, scale, rot, depth, align)
     self.render_manager:create_text_object(text_id, string, font, colour, x, y, scale, rot, depth, align)
+end
+
+
+--- Add a sprite object to the foreground draw queue in render manager.
+---@param sprite_id     string  ID for sprite object used for querying - must be unique
+---@param sprite_name   string  Name of sprite png file
+---@param sprite_tag    string  Tag of sprite in aseprite json
+---@param x             number  X position on screen
+---@param y             number  Y position on screen
+---@param scale         number  Scale factor
+---@param rot           number  Angle of rotation in degrees
+---@param depth         number  Draw order depth (255 highest, 0 lowest)
+function Engine:add_sprite(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
+    self.render_manager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, rot, scale, depth)
 end
 
 

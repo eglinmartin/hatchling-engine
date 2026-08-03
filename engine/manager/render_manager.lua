@@ -1,5 +1,4 @@
 local Class = require("engine.lib.class")
-local rs = require("engine.lib.resolution_solution")
 
 local DrawObject = require("engine.class.draw_object")
 local TextObject = require("engine.class.text_object")
@@ -23,9 +22,10 @@ local Shaders = {
 }
 
 
-function RenderManager:init(engine, bin_path)
+function RenderManager:init(engine, bin_path, rs)
     self.engine = engine
     self.bin_path = bin_path
+    self.rs = rs
 
     self:setup_events()
 
@@ -58,9 +58,9 @@ function RenderManager:setup_events()
         self.engine.event_manager.events.TOGGLE_FULLSCREEN, self, function()
             local fs = love.window.getFullscreen()
             if fs then
-                rs.setMode(960, 540, {fullscreen = false})
+                self.rs.setMode(960, 540, {fullscreen = false})
             else
-                rs.setMode(1920, 1080, {fullscreen = true})
+                self.rs.setMode(1920, 1080, {fullscreen = true})
             end
         end
     )
@@ -90,10 +90,10 @@ end
 
 
 function RenderManager:draw()
-    rs.push()
+    self.rs.push()
     self:draw_background()
     self:draw_foreground()
-    rs.pop()
+    self.rs.pop()
 end
 
 
@@ -104,7 +104,7 @@ function RenderManager:create_draw_object_background(sprite_id, sprite_name, spr
 end
 
 
-function RenderManager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, scale, rot, depth)
+function RenderManager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, rot, scale, depth)
     local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
     draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/sprite/")
     self.draw_objects_foreground[sprite_id] = draw_obj
@@ -132,8 +132,8 @@ function RenderManager:draw_background()
             draw_obj.x,
             draw_obj.y,
             draw_obj.rot,
-            draw_obj.scale,
-            draw_obj.scale,
+            draw_obj.scale_x,
+            draw_obj.scale_y,
             draw_obj.sprite:getWidth() / 2,
             draw_obj.sprite:getHeight() / 2
         )
@@ -155,32 +155,33 @@ function RenderManager:draw_foreground()
     end)
 
     -- Draw shadows
-    for _, entry in ipairs(render_list) do
-        if entry.type == "sprite" then
-            local draw_obj = entry.obj
-            self:draw_shadow(
-                draw_obj.sprite,
-                draw_obj.x,
-                draw_obj.y,
-                draw_obj.rot,
-                draw_obj.scale,
-                draw_obj.sprite:getWidth() / 2,
-                draw_obj.sprite:getHeight() / 2
-            )
-        end
-    end
+    -- for _, entry in ipairs(render_list) do
+    --     if entry.type == "sprite" then
+    --         local draw_obj = entry.obj
+    --         self:draw_shadow(
+    --             draw_obj.sprite,
+    --             draw_obj.x,
+    --             draw_obj.y,
+    --             draw_obj.rot,
+    --             draw_obj.scale,
+    --             draw_obj.sprite:getWidth() / 2,
+    --             draw_obj.sprite:getHeight() / 2
+    --         )
+    --     end
+    -- end
 
     -- Draw sprites and text interweaved, sorted by depth
     for _, entry in ipairs(render_list) do
         if entry.type == "sprite" then
             local draw_obj = entry.obj
             love.graphics.setColor(1, 1, 1, 1)
+            -- inside draw_foreground, sprite branch
             draw_obj.sprite:draw(
                 draw_obj.x,
                 draw_obj.y,
                 draw_obj.rot,
-                draw_obj.scale,
-                draw_obj.scale,
+                draw_obj.scale_x,
+                draw_obj.scale_y,
                 draw_obj.sprite:getWidth() / 2,
                 draw_obj.sprite:getHeight() / 2
             )

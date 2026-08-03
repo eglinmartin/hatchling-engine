@@ -3,9 +3,10 @@ local Entity = require("engine.class.entity")
 local SceneManager = Class{}
 
 
-function SceneManager:init(engine, game)
+function SceneManager:init(engine, game, flux)
     self.engine = engine
     self.game = game
+    self.flux = flux
 
     self.global_entities = {}
     self.scenes = {}
@@ -79,6 +80,10 @@ function SceneManager:update(dt, mx, my, md, mp)
     end
     
     for _, entity in pairs(self.global_entities) do
+        entity:update(dt, mx, my, md, mp)
+    end
+
+    for _, entity in pairs(self.current_scene.entities) do
         entity:update(dt, mx, my, md, mp)
     end
 end

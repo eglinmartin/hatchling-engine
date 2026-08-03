@@ -5,6 +5,7 @@ local Scene = Class{}
 function Scene:init(game, engine)
     self.game = game
     self.engine = engine
+    self.flux = self.engine.flux
     self.entities = {}
 end
 
