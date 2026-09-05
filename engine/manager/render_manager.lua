@@ -1,4 +1,5 @@
 local Class = require("engine.lib.class")
+local Camera = require("engine.lib.camera")
 
 local DrawObject = require("engine.class.draw_object")
 local TextObject = require("engine.class.text_object")
@@ -22,10 +23,11 @@ local Shaders = {
 }
 
 
-function RenderManager:init(engine, bin_path, rs)
+function RenderManager:init(engine, bin_path, rs, camera)
     self.engine = engine
     self.bin_path = bin_path
     self.rs = rs
+    self.camera = camera
 
     self:setup_events()
 
@@ -91,9 +93,27 @@ end
 
 function RenderManager:draw()
     self.rs.push()
+
+    love.graphics.push()
+    love.graphics.translate(self.rs.game_width/2, self.rs.game_height/2)
+    love.graphics.scale(self.camera.scale)
+    love.graphics.translate(-self.camera.x, -self.camera.y)
+    
     self:draw_background()
     self:draw_foreground()
+
+    love.graphics.pop()
     self.rs.pop()
+end
+
+
+function RenderManager:move_camera(x, y)
+    self.camera:lookAt(x, y)
+end
+
+
+function RenderManager:zoom_camera(mult)
+    self.camera:zoomTo(mult)
 end
 
 
@@ -105,6 +125,13 @@ end
 
 
 function RenderManager:create_draw_object_foreground(sprite_id, sprite_name, sprite_tag, x, y, rot, scale, depth)
+    local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
+    draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/sprite/")
+    self.draw_objects_foreground[sprite_id] = draw_obj
+end
+
+
+function RenderManager:create_draw_object_hud(sprite_id, sprite_name, sprite_tag, x, y, rot, scale, depth)
     local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
     draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/sprite/")
     self.draw_objects_foreground[sprite_id] = draw_obj
@@ -153,22 +180,6 @@ function RenderManager:draw_foreground()
     table.sort(render_list, function(a, b)
         return a.obj.depth < b.obj.depth
     end)
-
-    -- Draw shadows
-    -- for _, entry in ipairs(render_list) do
-    --     if entry.type == "sprite" then
-    --         local draw_obj = entry.obj
-    --         self:draw_shadow(
-    --             draw_obj.sprite,
-    --             draw_obj.x,
-    --             draw_obj.y,
-    --             draw_obj.rot,
-    --             draw_obj.scale,
-    --             draw_obj.sprite:getWidth() / 2,
-    --             draw_obj.sprite:getHeight() / 2
-    --         )
-    --     end
-    -- end
 
     -- Draw sprites and text interweaved, sorted by depth
     for _, entry in ipairs(render_list) do

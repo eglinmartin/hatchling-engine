@@ -6,8 +6,6 @@ local InputManager = require("engine.manager.input_manager")
 local RenderManager = require("engine.manager.render_manager")
 local SceneManager = require("engine.manager.scene_manager")
 
-local Entity = require("engine.class.entity")
-
 local VERSION = 0.1
 
 ---@alias RGBA number[] # {r, g, b, a}, each channel 0-1
@@ -16,14 +14,15 @@ local VERSION = 0.1
 
 
 --- Initialize engine and managers
-function Engine:init(bin_path, rs, flux)
+function Engine:init(bin_path, rs, flux, camera)
     self.version = VERSION
     self.rs = rs
     self.flux = flux
+    self.camera = camera
 
     self.event_manager = EventManager(self)
     self.input_manager = InputManager(self)
-    self.render_manager = RenderManager(self, bin_path, rs)
+    self.render_manager = RenderManager(self, bin_path, rs, camera)
     self.scene_manager = SceneManager(self, flux)
 end
 
@@ -147,6 +146,21 @@ end
 --- @param name     string  Unique name of scene
 function Engine:switch_scene(name)
     self.scene_manager:switch_scene(name)
+end
+
+
+--- Move camera to X and Y coordinate on screen 
+--- @param x         number     x coordinate
+--- @param y         number     y coordinate
+function Engine:move_camera(x, y)
+    self.render_manager:move_camera(x, y)
+end
+
+
+--- Zoom camera to multiplier of base zoom level (base = 1)
+--- @param mult      number     zoom multiplier
+function Engine:zoom_camera(mult)
+    self.render_manager:zoom_camera(mult)
 end
 
 

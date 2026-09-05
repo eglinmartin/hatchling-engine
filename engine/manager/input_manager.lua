@@ -30,10 +30,14 @@ end
 
 function InputManager:update(dt, rs)
     local raw_mx, raw_my = love.mouse.getPosition()
-    self.mx, self.my = rs.to_game(raw_mx, raw_my)
+    local game_mx, game_my = rs.to_game(raw_mx, raw_my)
+
+    local camera = self.engine.render_manager.camera
+    self.mx = (game_mx - rs.game_width/2) / camera.scale + camera.x
+    self.my = (game_my - rs.game_height/2) / camera.scale + camera.y
+
     self.mouse_down = love.mouse.isDown(1)
 
-    -- self.mouse_pressed = false
     self.mouse_released = false
     self.keys_pressed = {}
     self.keys_released = {}

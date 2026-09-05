@@ -153,13 +153,16 @@ function Entity:update(dt, mx, my, mouse_down, mouse_pressed)
     self:update_input(dt, mx, my, mouse_down, mouse_pressed)
     self:update_sine_waves(dt)
     
-    if self.x ~= self.xprevious or self.y ~= self.yprevious or self.scale ~= self.scaleprevious or self.rotation ~= self.rotationprevious then
+    if self.x ~= self.xprevious or self.y ~= self.yprevious
+    or self.scale_x ~= self.scale_x_previous or self.scale_y ~= self.scale_y_previous
+    or self.rotation ~= self.rotationprevious then
         self:create_sprite()
     end
 
     self.xprevious = self.x
     self.yprevious = self.y
-    self.scaleprevious = self.scale
+    self.scale_x_previous = self.scale_x
+    self.scale_y_previous = self.scale_y
     self.rotationprevious = self.rotation
 end
 
