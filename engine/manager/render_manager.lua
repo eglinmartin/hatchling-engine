@@ -42,7 +42,9 @@ function RenderManager:init(engine, bin_path, rs, camera)
 
     self.draw_objects_background = {}
     self.draw_objects_foreground = {}
+    self.draw_objects_hud = {}
     self.text_objects = {}
+    self.text_objects_hud = {}
     self.image_cache = {}
 end
 
@@ -72,7 +74,9 @@ end
 function RenderManager:clear_screen()
     self.draw_objects_background = {}
     self.draw_objects_foreground = {}
+    self.draw_objects_hud = {}
     self.text_objects = {}
+    self.text_objects_hud = {}
 end
 
 
@@ -84,8 +88,16 @@ function RenderManager:update(dt)
     for _, draw_object in pairs(self.draw_objects_foreground) do
        draw_object:update(dt)
     end
-    
+
+    for _, draw_object in pairs(self.draw_objects_hud) do
+       draw_object:update(dt)
+    end
+
     for _, text_object in pairs(self.text_objects) do
+       text_object:update(dt)
+    end
+
+    for _, text_object in pairs(self.text_objects_hud) do
        text_object:update(dt)
     end
 end
@@ -93,16 +105,20 @@ end
 
 function RenderManager:draw()
     self.rs.push()
+    
+    self:draw_background()
 
     love.graphics.push()
     love.graphics.translate(self.rs.game_width/2, self.rs.game_height/2)
     love.graphics.scale(self.camera.scale)
     love.graphics.translate(-self.camera.x, -self.camera.y)
     
-    self:draw_background()
     self:draw_foreground()
 
     love.graphics.pop()
+
+    self:draw_hud()
+    
     self.rs.pop()
 end
 
@@ -133,8 +149,8 @@ end
 
 function RenderManager:create_draw_object_hud(sprite_id, sprite_name, sprite_tag, x, y, rot, scale, depth)
     local draw_obj = DrawObject(sprite_id, nil, x, y, rot, scale, depth)
-    draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/sprite/")
-    self.draw_objects_foreground[sprite_id] = draw_obj
+    draw_obj:change_sprite(sprite_name, sprite_tag, self.bin_path .. "/hud/")
+    self.draw_objects_hud[sprite_id] = draw_obj
 end
 
 
@@ -148,7 +164,17 @@ function RenderManager:create_text_object(text_id, string, font, colour, x, y, s
 end
 
 
+function RenderManager:create_text_object_hud(text_id, string, font, colour, x, y, scale, rot, depth, align)
+    self.text_objects[text_id] = TextObject(text_id, string, font, colour, x, y, scale, rot, depth, align)
+end
+
+
 function RenderManager:remove_text_object(text_id)
+    self.text_objects[text_id] = nil
+end
+
+
+function RenderManager:remove_text_object_hud(text_id)
     self.text_objects[text_id] = nil
 end
 
@@ -175,6 +201,65 @@ function RenderManager:draw_foreground()
         table.insert(render_list, { type = "sprite", obj = obj })
     end
     for _, obj in pairs(self.text_objects) do
+        table.insert(render_list, { type = "text", obj = obj })
+    end
+    table.sort(render_list, function(a, b)
+        return a.obj.depth < b.obj.depth
+    end)
+
+    -- Draw sprites and text interweaved, sorted by depth
+    for _, entry in ipairs(render_list) do
+        if entry.type == "sprite" then
+            local draw_obj = entry.obj
+            love.graphics.setColor(1, 1, 1, 1)
+            -- inside draw_foreground, sprite branch
+            draw_obj.sprite:draw(
+                draw_obj.x,
+                draw_obj.y,
+                draw_obj.rot,
+                draw_obj.scale_x,
+                draw_obj.scale_y,
+                draw_obj.sprite:getWidth() / 2,
+                draw_obj.sprite:getHeight() / 2
+            )
+
+        elseif entry.type == "text" then
+            local text_obj = entry.obj
+            local text_scale = text_obj.scale
+            
+            love.graphics.setFont(text_obj.font)
+            love.graphics.setColor(self.shadow_colour)
+            local shadow_offsets = {{2, 0}, {2, 1}, {2, 2}, {1, 2}, {0, 2}}
+            for i = 1, #shadow_offsets do
+                local ox = shadow_offsets[i][1] * text_scale
+                local oy = shadow_offsets[i][2] * text_scale - 6
+                self:draw_characters(text_obj.text, text_obj.x + ox, text_obj.y + oy, text_scale, text_obj.align, text_obj.font)
+            end
+
+            love.graphics.setColor({0, 0, 0})
+            local outline_offsets = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+            for i = 1, #outline_offsets do
+                local ox = outline_offsets[i][1] * text_scale
+                local oy = outline_offsets[i][2] * text_scale
+                self:draw_characters(text_obj.text, text_obj.x + ox, text_obj.y + oy - 6, text_scale, text_obj.align, text_obj.font)
+            end
+
+            love.graphics.setColor(text_obj.colour)
+            self:draw_characters(text_obj.text, text_obj.x, text_obj.y - 6, text_scale, text_obj.align, text_obj.font)
+        end
+    end
+
+    love.graphics.setColor(1, 1, 1, 1)
+end
+
+
+function RenderManager:draw_hud()
+    -- Build a unified depth-sorted list of all renderable objects
+    local render_list = {}
+    for _, obj in pairs(self.draw_objects_hud) do
+        table.insert(render_list, { type = "sprite", obj = obj })
+    end
+    for _, obj in pairs(self.text_objects_hud) do
         table.insert(render_list, { type = "text", obj = obj })
     end
     table.sort(render_list, function(a, b)
